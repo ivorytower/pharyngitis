@@ -5,9 +5,11 @@ cd $(dirname "$0")
 
 coffee -c src
 
-Z=$(dirname "$0")/pharyngitis.zip
-rm -f "$Z"
-cd src/
-zip "$Z" $(find)
+rm -rf tmp
+mkdir -p tmp
+cp -r src/* node_modules tmp
+
+cd tmp
+find . | zip ../pharyngitis.nw -@
 cd ..
-zip "$Z" package.json $(find node_modules)
+rm -rf tmp
