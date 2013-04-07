@@ -3,6 +3,8 @@
 set -e
 cd $(dirname "$0")
 
+coffee -c src
+
 Z=$(dirname "$0")/pharyngitis.zip
 rm -f "$Z"
 cd src/
