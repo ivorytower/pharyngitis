@@ -3,6 +3,9 @@
 set -e
 cd $(dirname "$0")
 
+Z=$(dirname "$0")/pharyngitis.zip
+rm -f "$Z"
 cd src/
-zip - $(find) > ../pharyngitis.zip
+zip "$Z" $(find)
 cd ..
+zip "$Z" package.json $(find node_modules)
