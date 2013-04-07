@@ -1,0 +1,12 @@
+{
+    "name": "Pharyngitis",
+    "description": "",
+    "version": "0.0.1",
+    "dependencies": {
+    },
+    "devDependencies": {
+        "coffee-script": "",
+        "mocha": "",
+        "should": ""
+    }
+}
