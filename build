@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+cd $(dirname "$0")
+
+cd src/
+zip - $(find) > ../pharyngitis.zip
+cd ..
