@@ -1,0 +1,7 @@
+- for fileStatus in fileStatuses
+  .file
+    .column= fileStatus.firstColumn
+    .column= fileStatus.secondColumn
+    .filename= fileStatus.filename
+    - if (fileStatus.oldFilename)
+      .oldFilename= fileStatus.oldFilename

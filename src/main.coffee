@@ -5,9 +5,10 @@ fsmonitor = require "fsmonitor"
 gui = require "nw.gui"
 
 parser = require "./parser"
+ui = require "./ui"
 
 redisplay = (fileStatuses) ->
-  # TODO
+  ui.refresh(fileStatuses)
 
 execGitStatus = (dir, callback) ->
   child_process.execFile(
@@ -20,6 +21,10 @@ execGitStatus = (dir, callback) ->
       callback stdout.toString()
   )
 
+refreshStatus = (dir) ->
+  execGitStatus dir, (output) ->
+    redisplay parser.parse(output)
+
 fsWatchLoop = (dir) ->
   # TODO exclude git ignored files as well by asking git whether it ignores
   isInDotGit = (path) ->
@@ -29,8 +34,9 @@ fsWatchLoop = (dir) ->
     excludes: (path) -> isInDotGit(path)
 
   fsmonitor.watch dir, fileFilter, (_) ->
-    execGitStatus dir, (output) ->
-      redisplay parser.parse(output)
+    refreshStatus dir
 
 $ ->
-  fsWatchLoop gui.App.argv[0]
+  dir = gui.App.argv[0]
+  refreshStatus dir
+  fsWatchLoop dir

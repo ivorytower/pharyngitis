@@ -7,9 +7,9 @@ coffee -c src
 
 rm -rf tmp
 mkdir -p tmp
-cp -r src/* node_modules tmp
+cp -r src/* node_modules templates tmp
 
 cd tmp
 find . | zip ../pharyngitis.nw -@
-cd ..
+cd -
 rm -rf tmp
