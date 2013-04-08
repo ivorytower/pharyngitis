@@ -1,0 +1,51 @@
+body {
+    background-color: #555555;
+}
+
+#page {
+    font-family: "DejaVu Sans Mono", monospace;
+    font-size: 14px;
+}
+
+.file-group {
+    margin: 8px;
+    padding: 1px 8px;
+    border-radius: 3px;
+    box-shadow: 2px 2px 2px black;
+}
+
+#staged {
+    background-color: #80B034;
+}
+
+#unstaged {
+    background-color: #F63124;
+}
+
+#untracked {
+    background-color: #AAAAAA;
+}
+
+.file, .arrow, .new-file {
+    margin: 2px 2px;
+    border-radius: 2px;
+    padding: 3px;
+    display: inline-block;
+}
+
+.file, .new-file {
+    background-color: rgba(210, 210, 210, 0.6);
+}
+
+.arrow {
+    font-size: 24px;
+    line-height: 0px;
+}
+
+.status-deleted, .status-added, .status-modified {
+    font-weight: bold;
+    width: 15px;
+    margin-right: 5px;
+    text-align: center;
+    display: inline-block;
+}

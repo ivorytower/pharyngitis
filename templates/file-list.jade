@@ -1,7 +1,12 @@
-- for fileStatus in fileStatuses
-  .file
-    .column= fileStatus.firstColumn
-    .column= fileStatus.secondColumn
-    .filename= fileStatus.filename
-    - if (fileStatus.oldFilename)
-      .oldFilename= fileStatus.oldFilename
+- if (staged.length != 0)
+  #staged.file-group
+    - for fileStatus in staged
+      include file
+- if (unstaged.length != 0)
+  #unstaged.file-group
+    - for fileStatus in unstaged
+      include file
+- if (untracked.length != 0)
+  #untracked.file-group
+    - for fileStatus in untracked
+      include file

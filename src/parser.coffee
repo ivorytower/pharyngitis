@@ -2,7 +2,19 @@ class @FileStatus
   constructor: (@firstColumn, @secondColumn, @filename, @oldFilename = null) ->
 
   staged: ->
-    @firstColumn != " "
+    @firstColumn != " " && !@untracked()
+
+  unstaged: ->
+    @secondColumn != " " && !@untracked()
+
+  untracked: ->
+    @firstColumn == "?"
+
+  added: ->
+    @firstColumn == "A"
+
+  deleted: ->
+    @firstColumn == "D" || @secondColumn == "D"
 
 @parse = (input) =>
   filenameRegexp = "([^\\0]+)\\0"

@@ -1,0 +1,13 @@
+.status-group
+  - var statusClass = "status-modified", statusMark = "";
+  - if (fileStatus.added())
+    - statusClass = "status-added", statusMark = "+";
+  - if (fileStatus.deleted())
+    - statusClass = "status-deleted", statusMark = "x";
+  div(class=statusClass)= statusMark
+  - if (fileStatus.oldFilename)
+    .file= fileStatus.oldFilename
+    .arrow →
+    .new-file= fileStatus.filename
+  - else
+    .file= fileStatus.filename
