@@ -10,20 +10,24 @@ ui = require "./ui"
 redisplay = (fileStatuses) ->
   ui.refresh(fileStatuses)
 
-execGitStatus = (dir, callback) ->
+execGitStatus = (dir, callback, errorCallback) ->
   child_process.execFile(
     "/usr/bin/git",
     ["status", "--porcelain", "-z"],
     cwd: dir,
     (error, stdout, stderr) ->
-      throw error if error
-
-      callback stdout.toString()
+      unless error
+        callback stdout.toString()
+      else
+        ui.displayError("Error executing git status: " + stderr.toString())
+        errorCallback()
   )
 
-refreshStatus = (dir) ->
-  execGitStatus dir, (output) ->
-    redisplay parser.parse(output)
+refreshStatus = (dir, callback, errorCallback) ->
+  execGitStatus dir,
+    (output) ->
+      redisplay parser.parse(output),
+    errorCallback
 
 fsWatchLoop = (dir) ->
   # TODO exclude git ignored files as well by asking git whether it ignores
@@ -33,10 +37,15 @@ fsWatchLoop = (dir) ->
     matches: (path) -> !isInDotGit(path)
     excludes: (path) -> isInDotGit(path)
 
-  fsmonitor.watch dir, fileFilter, (_) ->
-    refreshStatus dir
+  monitor = fsmonitor.watch dir, fileFilter, (_) =>
+    refreshStatus dir,
+      ->,
+      ->
+        monitor.close()
 
 $ ->
   dir = gui.App.argv[0]
-  refreshStatus dir
-  fsWatchLoop dir
+  refreshStatus dir,
+    ->
+      fsWatchLoop dir,
+    ->

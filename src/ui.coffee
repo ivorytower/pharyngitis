@@ -12,3 +12,6 @@ jade = require "jade"
     unstaged: fileStatuses.filter (f) -> f.unstaged()
     untracked: fileStatuses.filter (f) -> f.untracked()
   $("#page").html template(locals)
+
+@displayError = (message) ->
+  $("#page").html "<div class=\"error-message\">#{message}</div>"

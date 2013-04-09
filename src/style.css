@@ -49,3 +49,8 @@ body {
     text-align: center;
     display: inline-block;
 }
+
+.error-message {
+    color: #770000;
+    text-align: center;
+}
