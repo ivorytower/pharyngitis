@@ -26,7 +26,8 @@ execGitStatus = (dir, callback, errorCallback) ->
 refreshStatus = (dir, callback, errorCallback) ->
   execGitStatus dir,
     (output) ->
-      redisplay parser.parse(output),
+      redisplay parser.parse(output)
+      callback()
     errorCallback
 
 fsWatchLoop = (dir) ->
@@ -39,7 +40,7 @@ fsWatchLoop = (dir) ->
 
   monitor = fsmonitor.watch dir, fileFilter, (_) =>
     refreshStatus dir,
-      ->,
+      ->
       ->
         monitor.close()
 
@@ -47,5 +48,5 @@ $ ->
   dir = gui.App.argv[0]
   refreshStatus dir,
     ->
-      fsWatchLoop dir,
+      fsWatchLoop dir
     ->
