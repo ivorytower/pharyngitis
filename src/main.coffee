@@ -7,28 +7,35 @@ gui = require "nw.gui"
 parser = require "./parser"
 ui = require "./ui"
 
-redisplay = (fileStatuses) ->
-  ui.refresh(fileStatuses)
+redisplay = (fileStatuses, branch) ->
+  ui.refresh fileStatuses, branch
 
-execGitStatus = (dir, callback, errorCallback) ->
+execGitCommand = (dir, args, callback, errorCallback) ->
   child_process.execFile(
     "/usr/bin/git"
-    ["status", "--porcelain", "-z"]
+    args
     cwd: dir
     (error, stdout, stderr) ->
       unless error
         callback stdout.toString()
       else
-        ui.displayError("Error executing git status: " + stderr.toString())
+        ui.displayError("Error executing git #{args[0]}: #{stderr.toString()}")
         errorCallback()
   )
 
 refreshStatus = (dir, callback, errorCallback) ->
-  execGitStatus(
+  execGitCommand(
     dir
+    ["status", "--porcelain", "-z"]
     (output) ->
-      redisplay parser.parse(output)
-      callback()
+      execGitCommand(
+        dir
+        ["rev-parse", "--abbrev-ref", "HEAD"]
+        (branch) ->
+          redisplay parser.parse(output), branch
+          callback()
+        errorCallback
+      )
     errorCallback
   )
 
