@@ -33,5 +33,4 @@ class @FileStatus
 
   while match = statusLineRegexp.exec(input)
     statusLineMatches = if match[1] then match[2..5] else match[7..9]
-    [firstColumn, secondColumn, filename, oldFilename] = statusLineMatches
-    new @FileStatus firstColumn, secondColumn, filename, oldFilename
+    new @FileStatus statusLineMatches...
