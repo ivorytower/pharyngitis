@@ -47,7 +47,7 @@ fsWatchLoop = (dir) ->
     matches: (path) -> !isInDotGit(path)
     excludes: (path) -> isInDotGit(path)
 
-  monitor = fsmonitor.watch dir, fileFilter, (_) =>
+  monitor = fsmonitor.watch dir, fileFilter, (_) ->
     refreshStatus(
       dir
       ->
