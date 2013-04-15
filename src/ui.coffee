@@ -12,7 +12,7 @@ jade = require "jade"
     unstaged: fileStatuses.filter (f) -> f.unstaged()
     untracked: fileStatuses.filter (f) -> f.untracked()
   $("#page").html template(locals)
-  $("title").html branch
+  $("title").text branch
 
 @displayError = (message) ->
-  $("#page").html "<div class=\"error-message\">#{message}</div>"
+  $("#page").empty().append $("<div class=\"error-message\" />").text message
