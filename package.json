@@ -10,6 +10,9 @@
     "devDependencies": {
         "coffee-script": "",
         "mocha": "",
-        "should": ""
+        "should": "",
+        "sinon": "",
+        "mockit": "",
+        "fake-fs": ""
     }
 }

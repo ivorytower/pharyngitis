@@ -6,6 +6,7 @@ gui = require "nw.gui"
 
 parser = require "./parser"
 ui = require "./ui"
+plugin_loader = require "./plugin-loader"
 
 redisplay = (fileStatuses, branch) ->
   ui.refresh fileStatuses, branch
@@ -56,8 +57,20 @@ fsWatchLoop = (dir, callback) ->
 
 $ ->
   dir = gui.App.argv[0]
+
+  plugins = plugin_loader.load()
+  for plugin in plugins
+    $("head").append $("<link rel=\"stylesheet\">").attr("href", plugin.css_file) if plugin.css_file
+
   refresh = (callback, errorCallback) ->
-    refreshStatus(dir, callback, errorCallback)
+    refreshStatus(
+      dir
+      ->
+        for plugin in plugins
+          plugin.onUpdate?()
+        callback()
+      errorCallback
+    )
   refresh(
     ->
       fsWatchLoop dir, refresh
