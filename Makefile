@@ -1,10 +1,10 @@
 all: compile test build
 
 compile:
-	coffee -c src
+	iced -c src
 
 test: compile
-	coffee -c test
+	iced -c test
 	mocha
 
 build: compile

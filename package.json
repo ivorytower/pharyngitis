@@ -8,7 +8,7 @@
         "jade": ""
     },
     "devDependencies": {
-        "coffee-script": "",
+        "iced-coffee-script": "",
         "mocha": "",
         "should": "",
         "sinon": "",
