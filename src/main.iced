@@ -25,20 +25,22 @@ execGitCommand = (dir, args, callback, errorCallback) ->
   )
 
 refreshStatus = (dir, callback, errorCallback) ->
-  execGitCommand(
-    dir
-    ["status", "--porcelain", "-z"]
-    (output) ->
-      execGitCommand(
-        dir
-        ["rev-parse", "--abbrev-ref", "HEAD"]
-        (branch) ->
-          redisplay parser.parse(output), branch
-          callback()
-        errorCallback
-      )
-    errorCallback
-  )
+  await
+    execGitCommand(
+      dir
+      ["status", "--porcelain", "-z"]
+      defer output
+      errorCallback
+    )
+    execGitCommand(
+      dir
+      ["rev-parse", "--abbrev-ref", "HEAD"]
+      defer branch
+      errorCallback
+    )
+
+  redisplay parser.parse(output), branch
+  callback()
 
 fsWatchLoop = (dir, callback) ->
   # TODO exclude git ignored files as well by asking git whether it ignores
