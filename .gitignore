@@ -1,2 +1,6 @@
 node_modules
+src/*.js
+test/*.js
 pharyngitis.nw
+/.dist
+/debug_repository.conf
