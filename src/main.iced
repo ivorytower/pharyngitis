@@ -44,11 +44,10 @@ refreshStatus = (dir, callback, errorCallback) ->
 
 fsWatchLoop = (dir, callback) ->
   # TODO exclude git ignored files as well by asking git whether it ignores
-  isInDotGit = (path) ->
-    path.match /^.git\/(?!index$)/
   fileFilter =
-    matches: (path) -> !isInDotGit(path)
-    excludes: (path) -> isInDotGit(path)
+    matches: (_) -> true
+    excludes: (path) ->
+      path.match /^.git\//
 
   monitor = fsmonitor.watch dir, fileFilter, (_) ->
     callback(
