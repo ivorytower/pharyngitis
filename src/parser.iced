@@ -32,5 +32,5 @@ class @FileStatus
   ///g
 
   while match = statusLineRegexp.exec(input)
-    statusLineMatches = if match[1] then match[2..5] else match[7..9]
+    statusLineMatches = if match[1]? then match[2..5] else match[7..9]
     new @FileStatus statusLineMatches...

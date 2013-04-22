@@ -1,4 +1,4 @@
-plugin_loader = require "../src/plugin-loader"
+pluginLoader = require "../src/plugin-loader"
 
 should = require "should"
 sinon = require "sinon"
@@ -15,19 +15,19 @@ describe "Plugin Loader", ->
   afterEach ->
     fs.unpatch()
 
-  load_plugins = (files) ->
-    module_loader = sinon.stub()
+  loadPlugins = (files) ->
+    moduleLoader = sinon.stub()
     for file in files
       filePath = "plugins/" + file.name
       fs.file filePath, ""
       if filePath[-3..] == ".js"
-        module_loader.withArgs("./" + filePath[0...-3]).returns { onUpdate: file.onUpdate }
+        moduleLoader.withArgs("./" + filePath[0...-3]).returns { onUpdate: file.onUpdate }
 
-    plugin_loader.load(module_loader)
+    pluginLoader.load(moduleLoader)
 
   describe "#load()", ->
     it "should provide JS callback", ->
-      load_plugins([
+      loadPlugins([
         {
           name: "p1/main.js"
           onUpdate: -> "expected"
@@ -35,14 +35,14 @@ describe "Plugin Loader", ->
       ])[0].onUpdate().should.equal "expected"
 
     it "should provide CSS file", ->
-      load_plugins([
+      loadPlugins([
         {
           name: "p1/style.css"
         }
-      ])[0].css_file.should.equal "plugins/p1/style.css"
+      ])[0].cssFile.should.equal "plugins/p1/style.css"
 
     it "should work for more than one plugin", ->
-      load_plugins([
+      loadPlugins([
         {
           name: "p1/main.js"
           onUpdate: -> "unexpected"
@@ -56,10 +56,10 @@ describe "Plugin Loader", ->
     # TODO load plugins in alphabetical order
 
     it "should set JS callback and CSS to undefined if not provided", ->
-      plugin = load_plugins([
+      plugin = loadPlugins([
         {
           name: "p1/support.js"
         }
       ])[0]
       should.not.exist plugin.onUpdate
-      should.not.exist plugin.css_file
+      should.not.exist plugin.cssFile

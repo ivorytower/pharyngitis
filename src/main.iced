@@ -1,4 +1,4 @@
-child_process = require "child_process"
+childProcess = require "child_process"
 
 $ = require "jquery"
 fsmonitor = require "fsmonitor"
@@ -6,18 +6,18 @@ gui = require "nw.gui"
 
 parser = require "./parser"
 ui = require "./ui"
-plugin_loader = require "./plugin-loader"
+pluginLoader = require "./plugin-loader"
 
 redisplay = (fileStatuses, branch) ->
   ui.refresh fileStatuses, branch
 
 execGitCommand = (dir, args, callback, errorCallback) ->
-  child_process.execFile(
+  childProcess.execFile(
     "/usr/bin/git"
     args
     cwd: dir
     (error, stdout, stderr) ->
-      unless error
+      unless error?
         callback stdout.toString()
       else
         ui.displayError("Error executing git #{args[0]}: #{stderr.toString()}")
@@ -60,9 +60,9 @@ fsWatchLoop = (dir, callback) ->
 $ ->
   dir = gui.App.argv[0]
 
-  plugins = plugin_loader.load()
+  plugins = pluginLoader.load()
   for plugin in plugins
-    $("head").append $("<link rel=\"stylesheet\">").attr("href", plugin.css_file) if plugin.css_file
+    $("head").append $("<link rel=\"stylesheet\">").attr("href", plugin.cssFile) if plugin.cssFile
 
   refresh = (callback, errorCallback) ->
     refreshStatus(

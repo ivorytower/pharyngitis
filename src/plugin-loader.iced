@@ -1,18 +1,18 @@
 fs = require "fs"
 
-# module_loader is a dependency injection needed for the tests
-@load = (module_loader = require) ->
+# moduleLoader is a dependency injection needed for the tests
+@load = (moduleLoader = require) ->
   dirs = fs.readdirSync("plugins").filter (dir) ->
     fs.statSync("plugins/" + dir).isDirectory()
   dirs.map (dir) ->
     dir = "plugins/#{dir}/"
 
-    main_js_file = dir + "main.js"
-    main = module_loader("./" + main_js_file[0...-3]) if fs.existsSync(main_js_file)
-    onUpdate = main.onUpdate if main
+    mainJsFile = dir + "main.js"
+    main = moduleLoader("./" + mainJsFile[0...-3]) if fs.existsSync(mainJsFile)
+    onUpdate = main?.onUpdate
 
-    css_file = dir + "style.css"
+    cssFile = dir + "style.css"
     {
       onUpdate: onUpdate
-      css_file: if fs.existsSync(css_file) then css_file else undefined
+      cssFile: if fs.existsSync(cssFile) then cssFile else undefined
     }
