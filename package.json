@@ -2,17 +2,20 @@
     "name": "Pharyngitis",
     "description": "",
     "version": "0.0.1",
+    "scripts": {
+	"test": "make test"
+    },
     "dependencies": {
-        "jquery": "",
-        "fsmonitor": "",
-        "jade": ""
+	"jquery": "",
+	"fsmonitor": "",
+	"jade": ""
     },
     "devDependencies": {
-        "iced-coffee-script": "",
-        "mocha": "",
-        "should": "",
-        "sinon": "",
-        "mockit": "",
-        "fake-fs": ""
+	"iced-coffee-script": "",
+	"mocha": "",
+	"should": "",
+	"sinon": "",
+	"mockit": "",
+	"fake-fs": ""
     }
 }
