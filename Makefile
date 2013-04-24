@@ -33,7 +33,7 @@ ifeq ($(phrg_debug_project),) # var still empty
 endif
 
 
-all: node_modules dist
+all: dist
 
 test: $(test_compiled)
 	@echo "(target) running tests..."
@@ -41,11 +41,11 @@ test: $(test_compiled)
 
 dist: $(nw_package)
 
-test/%.js: test/%.iced src/%.js
+test/%.js: test/%.iced src/%.js node_modules
 	@echo "(compile) test: $<"
 	@$(iced) -c $<
 
-src/%.js: src/%.iced
+src/%.js: src/%.iced node_modules
 	@echo "(compile) source: $<"
 	@$(iced) -c $<
 
@@ -63,6 +63,11 @@ $(nw_package): node_modules  src/package.json $(compiled) $(dist_sources) $(extr
 clean:
 	@echo "(target) cleaning..."
 	@rm -rf $(nw_package) $(compiled) $(test_compiled) $(distdir)
+
+distclean:
+	@echo "(target) distcleaning..."
+	@rm -rf node_modules
+
 
 node_modules: package.json
 	@echo "(target) updating node modules..."
