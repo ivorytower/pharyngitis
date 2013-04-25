@@ -73,7 +73,9 @@ node_modules: package.json
 	@echo "(target) updating node modules..."
 	@npm install && touch $@
 
-debug:
+build: node_modules $(compiled)
+
+debug: build
 	@echo "(debug) running with git repo set to: $(phrg_debug_project) ..."
 	@nw src $(phrg_debug_project)
 
