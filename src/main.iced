@@ -39,8 +39,9 @@ refreshStatus = (dir, callback, errorCallback) ->
       errorCallback
     )
 
-  redisplay parser.parse(output), branch
-  callback()
+  fileStatuses = parser.parse(output)
+  redisplay fileStatuses, branch
+  callback fileStatuses
 
 fsWatchLoop = (dir, callback) ->
   # TODO exclude git ignored files as well by asking git whether it ignores
@@ -66,9 +67,9 @@ $ ->
   refresh = (callback, errorCallback) ->
     refreshStatus(
       dir
-      ->
+      (fileStatuses) ->
         for plugin in plugins
-          plugin.onUpdate?()
+          plugin.onUpdate? fileStatuses
         callback()
       errorCallback
     )
