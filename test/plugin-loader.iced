@@ -2,7 +2,6 @@ pluginLoader = require "../src/plugin-loader"
 
 should = require "should"
 sinon = require "sinon"
-mockit = require "mockit"
 FakeFS = require "fake-fs"
 
 describe "Plugin Loader", ->
