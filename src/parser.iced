@@ -1,20 +1,4 @@
-class @FileStatus
-  constructor: (@firstColumn, @secondColumn, @filename, @oldFilename = null) ->
-
-  staged: ->
-    @firstColumn != " " && !@untracked()
-
-  unstaged: ->
-    @secondColumn != " " && !@untracked()
-
-  untracked: ->
-    @firstColumn == "?"
-
-  added: ->
-    @firstColumn == "A"
-
-  deleted: ->
-    @firstColumn == "D" || @secondColumn == "D"
+{FileStatus} = require "./file-status"
 
 @parse = (input) =>
   filenameRegexp = "([^\\0]+)\\0"
@@ -33,4 +17,4 @@ class @FileStatus
 
   while match = statusLineRegexp.exec(input)
     statusLineMatches = if match[1]? then match[2..5] else match[7..9]
-    new @FileStatus statusLineMatches...
+    new FileStatus statusLineMatches...

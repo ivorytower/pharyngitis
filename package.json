@@ -3,19 +3,20 @@
     "description": "",
     "version": "0.0.1",
     "scripts": {
-	"test": "make test"
+        "test": "make test"
     },
     "dependencies": {
-	"jquery": "",
-	"fsmonitor": "",
-	"jade": ""
+        "jquery": "",
+        "fsmonitor": "",
+        "jade": "",
+        "underscore": ""
     },
     "devDependencies": {
-	"iced-coffee-script": "",
-	"mocha": "",
-	"should": "",
-	"sinon": "",
-	"mockit": "",
-	"fake-fs": ""
+        "iced-coffee-script": "",
+        "mocha": "",
+        "should": "",
+        "sinon": "",
+        "mockit": "",
+        "fake-fs": ""
     }
 }

@@ -5,9 +5,10 @@
   - if (fileStatus.deleted())
     - statusClass = "status-deleted", statusMark = "x";
   div(class=statusClass)= statusMark
-  - if (fileStatus.oldFilename)
-    .file= fileStatus.oldFilename
-    .arrow →
-    .new-file= fileStatus.filename
-  - else
-    .file= fileStatus.filename
+  .file-container
+    - if (fileStatus.oldFilename)
+      .file= fileStatus.oldFilename
+      .arrow →
+      .new-file= fileStatus.filename
+    - else
+      .file= fileStatus.filename

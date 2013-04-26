@@ -26,6 +26,10 @@ body {
     background-color: #AAAAAA;
 }
 
+.file-container {
+    display: inline-block;
+}
+
 .file, .arrow, .new-file {
     margin: 2px 2px;
     border-radius: 2px;

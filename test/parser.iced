@@ -1,4 +1,4 @@
-{FileStatus} = parser = require "../src/parser"
+parser = require "../src/parser"
 should = require "should"
 
 describe "Parser", ->
@@ -36,8 +36,3 @@ describe "Parser", ->
     it "should work when there is more than one file changed", ->
       parse("?? file1\0M  file2\0")[1].filename.should.equal "file2"
       parse("R  file1\0file1-old\0M  file2\0")[1].filename.should.equal "file2"
-
-  describe "FileStatus", ->
-    it "tells if the file is staged", ->
-      (new FileStatus "M", " ", "file").staged().should.be.ok
-      (new FileStatus " ", "M", "file").staged().should.not.be.ok

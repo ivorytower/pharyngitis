@@ -1,0 +1,7 @@
+.file-container {
+    border-radius: 2px;
+}
+
+.selected {
+    background-color: white;
+}
