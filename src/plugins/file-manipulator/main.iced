@@ -3,8 +3,14 @@
 $ = require "jquery"
 _ = require "underscore"
 
+selected = null
+currentFileStatuses = null
+
 class Selection
   constructor: (@group, @index) ->
+
+  fileStatus: (fileStatuses = currentFileStatuses) ->
+    fileStatuses[@group]?[@index]
 
   highlight: ->
     @__getElement().addClass "selected"
@@ -15,13 +21,10 @@ class Selection
   __getElement: ->
     $("##{@group}")?.find ".status-group:nth-of-type(#{@index + 1}) .file-container"
 
-selected = null
-statuses = null
-
 switchSelection = (newSelectionF) ->
   selected?.clear()
 
-  selections = buildSelections statuses
+  selections = buildSelections currentFileStatuses
   index =
     # The "clever" code below implements cycling when iteration reaches top/bottom and also starting from top/bottom
     # when there's no current selection
@@ -33,11 +36,11 @@ switchSelection = (newSelectionF) ->
 
   selected?.highlight()
 
-buildSelections = (statuses) ->
-  statuses = _.pairs(FileStatus.group statuses).map ([group, statuses]) ->
+buildSelections = (fileStatuses) ->
+  fileStatuses = _.pairs(fileStatuses).map ([group, statuses]) ->
     [0...statuses.length].map (i) ->
       new Selection group, i
-  [].concat statuses...
+  [].concat fileStatuses...
 
 indexOf = (array, element) ->
   for x, i in array
@@ -59,8 +62,28 @@ $("body").keypress (event) ->
   keyMap[String.fromCharCode event.which]?()
 
 @onUpdate = (fileStatuses) ->
-  statuses = fileStatuses
+  fileStatuses = FileStatus.group fileStatuses
+  previouslySelected = selected
   selected = null
+
+  if previouslySelected?
+    # If the same file status is present, select it
+    previouslySelectedStatus = previouslySelected.fileStatus()
+    selections = buildSelections(fileStatuses)
+    orderedStatuses = selections.map (selection) ->
+      selection.fileStatus fileStatuses
+    indexInSelections = indexOf orderedStatuses, previouslySelectedStatus
+    selected = selections[indexInSelections]
+
+    # If not select the file status in the same staging group with the same index which would likely be the one that
+    # was previously after it in the same group
+    unless selected?
+      groupSize = fileStatuses[previouslySelected.group].length
+      if groupSize > 0
+        selected = new Selection previouslySelected.group,
+                                 if previouslySelected.index <= groupSize then previouslySelected.index else groupSize
+
+  currentFileStatuses = fileStatuses
 
 @getSelected = ->
   selected

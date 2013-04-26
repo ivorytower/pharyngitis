@@ -14,16 +14,20 @@ jqueryStub.withArgs("body").returns {
     onKeypress = callback
 }
 
+{FileStatus} = require "../../../src/file-status"
+
 {onUpdate, getSelected} = mockit "../../../src/plugins/file-manipulator/main", {
   jquery: jqueryStub
 }
-
-{FileStatus} = require "../../../src/file-status"
 
 should = require "should"
 
 describe "file manipulator", ->
   describe "selected", ->
+    # This is to clear any previously selected file
+    beforeEach ->
+      onUpdate []
+
     assertSelected = (expected) ->
       _.values(getSelected()).should.eql expected
 
@@ -56,27 +60,21 @@ describe "file manipulator", ->
       onUpdate [
         new FileStatus "M", " ", "file1"
         new FileStatus "M", " ", "file2"
-      ]
-      press "j"
-      press "j"
-      assertSelected ["staged", 1]
-
-      onUpdate [
         new FileStatus "M", " ", "file3"
-        new FileStatus "M", " ", "file4"
       ]
+      press "j"
+      press "j"
+      press "j"
+      assertSelected ["staged", 2]
+
       press "k"
       press "k"
       assertSelected ["staged", 0]
 
-      onUpdate [
-        new FileStatus "M", " ", "file5"
-        new FileStatus "M", " ", "file6"
-      ]
       press "j"
       press "j"
       press "k"
-      assertSelected ["staged", 0]
+      assertSelected ["staged", 1]
 
     it "cycles through the top/bottom of the list", ->
       onUpdate [
@@ -107,4 +105,58 @@ describe "file manipulator", ->
       press "j"
       press "j"
       press "k"
+      should.not.exist getSelected()
+
+    it "remembers the selected file when a file disappears", ->
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", " ", "file2"
+        new FileStatus " ", "M", "file3"
+      ]
+      press "j"
+      press "j"
+      onUpdate [
+        new FileStatus "M", " ", "file2"
+        new FileStatus " ", "M", "file3"
+      ]
+      assertSelected ["staged", 0]
+
+    it "remembers the selected file when a new file appears", ->
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus " ", "M", "file3"
+      ]
+      press "k"
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", " ", "file2"
+        new FileStatus " ", "M", "file3"
+      ]
+      assertSelected ["unstaged", 0]
+
+    it "selects the next file in the group when the file has disappeared", ->
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", " ", "file2"
+        new FileStatus "M", " ", "file3"
+        new FileStatus " ", "M", "file4"
+      ]
+      press "j"
+      press "j"
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", " ", "file3"
+        new FileStatus " ", "M", "file4"
+      ]
+      assertSelected ["staged", 1]
+
+    it "clears the selection when the selected sole file in a group disappears", ->
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus " ", "M", "file2"
+      ]
+      press "j"
+      onUpdate [
+        new FileStatus " ", "M", "file2"
+      ]
       should.not.exist getSelected()
