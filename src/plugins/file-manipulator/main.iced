@@ -84,6 +84,7 @@ $("body").keypress (event) ->
                                  if previouslySelected.index <= groupSize then previouslySelected.index else groupSize
 
   currentFileStatuses = fileStatuses
+  selected?.highlight()
 
 @getSelected = ->
   selected
