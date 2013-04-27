@@ -3,6 +3,7 @@ sinon = require "sinon"
 _ = require "underscore"
 
 onKeypress = null
+onKeyup = null
 # This brilliant piece of engineering allows calling and chaining any jQuery methods and requires only listing their
 # names
 jqueryStub = sinon.stub()
@@ -12,6 +13,8 @@ jqueryStub.returns _.object(["find", "addClass", "removeClass"].map (method) ->
 jqueryStub.withArgs("body").returns {
   keypress: (callback) ->
     onKeypress = callback
+  keyup: (callback) ->
+    onKeyup = callback
 }
 
 {FileStatus} = require "../../../src/file-status"
@@ -23,7 +26,7 @@ jqueryStub.withArgs("body").returns {
 should = require "should"
 
 describe "file manipulator", ->
-  describe "selected", ->
+  describe "#getSelected()", ->
     # This is to clear any previously selected file
     beforeEach ->
       onUpdate []
@@ -32,7 +35,8 @@ describe "file manipulator", ->
       _.values(getSelected()).should.eql expected
 
     press = (key) ->
-      onKeypress {which: key.charCodeAt()}
+      f = if ["\t"].indexOf(key) >= 0 then onKeyup else onKeypress
+      f {which: key.charCodeAt()}
 
     it "selects nothing by default", ->
       onUpdate [
@@ -160,3 +164,42 @@ describe "file manipulator", ->
         new FileStatus " ", "M", "file2"
       ]
       should.not.exist getSelected()
+
+    # Cycling should always start from the first group and when anything but <tab> is pressed it should stop
+    it "cycles between the first files in each group when <tab> is pressed", ->
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", " ", "file2"
+        new FileStatus "?", "?", "file3"
+        new FileStatus "?", "?", "file4"
+      ]
+      press "\t"
+      assertSelected ["staged", 0]
+
+      press "\t"
+      assertSelected ["untracked", 0]
+
+      press "\t"
+      assertSelected ["staged", 0]
+
+      press "j"
+      press "\t"
+      assertSelected ["staged", 0]
+
+      press "j"
+      press "j"
+      press "j"
+      press "\t"
+      press "\t"
+      assertSelected ["untracked", 0]
+
+      press "\t"
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", "M", "file2"
+        new FileStatus "?", "?", "file3"
+        new FileStatus "?", "?", "file4"
+      ]
+      press "\t"
+      assertSelected ["staged", 0]
+

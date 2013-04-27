@@ -5,6 +5,8 @@ _ = require "underscore"
 
 selected = null
 currentFileStatuses = null
+cyclingGroups = false
+selectionsForEachGroup = null
 
 class Selection
   constructor: (@group, @index) ->
@@ -21,19 +23,20 @@ class Selection
   __getElement: ->
     $("##{@group}")?.find ".status-group:nth-of-type(#{@index + 1}) .file-container"
 
-switchSelection = (newSelectionF) ->
-  selected?.clear()
-
+selectionByIndex = (indexCallback) ->
   selections = buildSelections currentFileStatuses
   index =
     # The "clever" code below implements cycling when iteration reaches top/bottom and also starting from top/bottom
     # when there's no current selection
     if selected?
-      newSelectionF(indexOf(selections, selected) + selections.length) % selections.length
+      indexCallback(indexOf(selections, selected) + selections.length) % selections.length
     else
-      newSelectionF(selections.length) % (selections.length + 1)
-  selected = selections[index]
+      indexCallback(selections.length) % (selections.length + 1)
+  selections[index]
 
+switchSelection = (selection) ->
+  selected?.clear()
+  selected = selection
   selected?.highlight()
 
 buildSelections = (fileStatuses) ->
@@ -50,21 +53,42 @@ indexOf = (array, element) ->
 
 keyMap = {
   j: ->
-    switchSelection (index) ->
+    switchSelection selectionByIndex (index) ->
       index + 1
 
   k: ->
-    switchSelection (index) ->
+    switchSelection selectionByIndex (index) ->
       index - 1
 }
 
+specialKeyMap = {
+  "\t": ->
+    if cyclingGroups
+      selectionsForEachGroup.push selectionsForEachGroup.shift() unless selectionsForEachGroup.length == 0
+    else
+      selectionsForEachGroup = _.compact _.pairs(currentFileStatuses).map ([group, statuses]) ->
+        new Selection group, 0 if statuses.length > 0
+
+    switchSelection selectionsForEachGroup[0]
+    cyclingGroups = true
+}
+
 $("body").keypress (event) ->
-  keyMap[String.fromCharCode event.which]?()
+  handleKeyEvent(event, keyMap)
+
+$("body").keyup (event) ->
+  handleKeyEvent(event, specialKeyMap)
+
+handleKeyEvent = (event, keyMap) ->
+  key = String.fromCharCode event.which
+  cyclingGroups = false unless key == "\t"
+  keyMap[key]?()
 
 @onUpdate = (fileStatuses) ->
   fileStatuses = FileStatus.group fileStatuses
   previouslySelected = selected
   selected = null
+  cyclingGroups = false
 
   if previouslySelected?
     # If the same file status is present, select it
