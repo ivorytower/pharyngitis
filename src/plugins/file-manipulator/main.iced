@@ -63,23 +63,20 @@ keyMap = {
       index - 1
 
   c: ->
-    status = selected.fileStatus()
-    unless status.untracked() || status.staged()
-      execGitCommand currentDir, ["checkout", status.filename],
+    if selected.group == "unstaged"
+      execGitCommand currentDir, ["checkout", selected.fileStatus().filename],
         ->
         ->
 
   s: ->
-    status = selected.fileStatus()
-    command = if status.staged() then ["reset", "--"] else ["add"]
-    execGitCommand currentDir, command.concat([status.filename]),
+    command = if selected.group == "staged" then ["reset", "--"] else ["add"]
+    execGitCommand currentDir, command.concat([selected.fileStatus().filename]),
       ->
       ->
 
   d: ->
-    status = selected.fileStatus()
-    command = ["difftool", "-y", status.filename]
-    command.splice 2, 0, "--cached" if status.staged()
+    command = ["difftool", "-y", selected.fileStatus().filename]
+    command.splice 2, 0, "--cached" if selected.group == "staged"
     execGitCommand currentDir, command,
       ->
       ->

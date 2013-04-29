@@ -44,11 +44,11 @@ describe "file manipulator", ->
     f = if ["\t"].indexOf(key) >= 0 then onKeyup else onKeypress
     f {which: key.charCodeAt()}
 
-  describe "#getSelected()", ->
-    # This is to clear any previously selected file
-    beforeEach ->
-      onUpdate []
+  # This is to clear any previously selected file
+  beforeEach ->
+    onUpdate []
 
+  describe "#getSelected()", ->
     assertSelected = (expected) ->
       _.values(getSelected()).should.eql expected
 
@@ -264,6 +264,15 @@ describe "file manipulator", ->
       selectFile ["M", " ", "file"]
       press "s"
       gitExecSpy.calledWith(dir, ["reset", "--", "file"]).should.be.ok
+
+    it "executes git add or reset based on where the file was selected for files that are both staged and unstaged", ->
+      onUpdate [new FileStatus("M", "M", "file")], dir
+      press "j"
+      press "s"
+      gitExecSpy.calledWith(dir, ["reset", "--", "file"]).should.be.ok
+      press "j"
+      press "s"
+      gitExecSpy.secondCall.calledWith(dir, ["add", "file"]).should.be.ok
 
     it "executes git difftool -y when d is pressed on an unstaged file", ->
       selectFile [" ", "M", "file"]
