@@ -246,3 +246,18 @@ describe "file manipulator", ->
       selectFile ["?", "?", "file"]
       press "c"
       gitExecSpy.callCount.should.equal 0
+
+    it "executes git add when s is pressed on an untracked file", ->
+      selectFile ["?", "?", "file"]
+      press "s"
+      gitExecSpy.calledWith(dir, ["add", "file"]).should.be.ok
+
+    it "executes git add when s is pressed on an unstaged file", ->
+      selectFile [" ", "M", "file"]
+      press "s"
+      gitExecSpy.calledWith(dir, ["add", "file"]).should.be.ok
+
+    it "executes git reset when s is pressed on a staged file", ->
+      selectFile ["M", " ", "file"]
+      press "s"
+      gitExecSpy.calledWith(dir, ["reset", "--", "file"]).should.be.ok

@@ -68,6 +68,13 @@ keyMap = {
       execGitCommand currentDir, ["checkout", status.filename],
         ->
         ->
+
+  s: ->
+    status = selected.fileStatus()
+    command = if status.staged() then ["reset", "--"] else ["add"]
+    execGitCommand currentDir, command.concat([status.filename]),
+      ->
+      ->
 }
 
 specialKeyMap = {
