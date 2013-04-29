@@ -61,7 +61,9 @@ keyMap = {
   k: ->
     switchSelection selectionByIndex (index) ->
       index - 1
+}
 
+selectedKeyMap = {
   c: ->
     if selected.group == "unstaged"
       execGitCommand currentDir, ["checkout", selected.fileStatus().filename],
@@ -96,6 +98,7 @@ specialKeyMap = {
 
 $("body").keypress (event) ->
   handleKeyEvent(event, keyMap)
+  handleKeyEvent(event, selectedKeyMap) if selected?
 
 $("body").keyup (event) ->
   handleKeyEvent(event, specialKeyMap)

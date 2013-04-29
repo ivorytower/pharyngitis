@@ -283,3 +283,10 @@ describe "file manipulator", ->
       selectFile ["M", " ", "file"]
       press "d"
       gitExecSpy.calledWith(dir, ["difftool", "-y", "--cached", "file"]).should.be.ok
+
+    it "doesn't execute anything if no file is selected", ->
+      onUpdate [new FileStatus("M", " ", "file")], dir
+      press "c"
+      press "s"
+      press "d"
+      gitExecSpy.callCount.should.equal 0
