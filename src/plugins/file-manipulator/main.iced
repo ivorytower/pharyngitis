@@ -64,7 +64,7 @@ keyMap = {
 
   c: ->
     status = selected.fileStatus()
-    unless status.untracked()
+    unless status.untracked() || status.staged()
       execGitCommand currentDir, ["checkout", status.filename],
         ->
         ->

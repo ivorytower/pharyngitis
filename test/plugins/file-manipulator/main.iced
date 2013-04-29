@@ -233,7 +233,7 @@ describe "file manipulator", ->
       spiable.gitExecImpl.restore()
 
     it "executes git checkout when c is pressed", ->
-      selectFile ["M", " ", "file"]
+      selectFile [" ", "M", "file"]
       press "c"
       gitExecSpy.calledWith(dir, ["checkout", "file"]).should.be.ok
 
@@ -242,8 +242,11 @@ describe "file manipulator", ->
       press "c"
       gitExecSpy.calledWith(dir, ["checkout", "file"]).should.be.ok
 
-    it "doesn't execute git checkout on untracked files", ->
+    it "doesn't execute git checkout on staged or untracked files", ->
       selectFile ["?", "?", "file"]
+      press "c"
+      gitExecSpy.callCount.should.equal 0
+      selectFile ["M", " ", "file"]
       press "c"
       gitExecSpy.callCount.should.equal 0
 
