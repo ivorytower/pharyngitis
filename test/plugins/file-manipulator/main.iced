@@ -17,15 +17,33 @@ jqueryStub.withArgs("body").returns {
     onKeyup = callback
 }
 
+gitExecSucceeds = true
+# This absolute nonsense is necessitated by the way Sinon works
+spiable = {
+  gitExecImpl: (dir, args, callback, errorCallback) ->
+    if gitExecSucceeds
+      callback()
+    else
+      errorCallback()
+}
+
+gitExec = (dir, args, callback, errorCallback) ->
+  spiable.gitExecImpl(dir, args, callback, errorCallback)
+
 {FileStatus} = require "../../../src/file-status"
 
 {onUpdate, getSelected} = mockit "../../../src/plugins/file-manipulator/main", {
   jquery: jqueryStub
+  "../../git-command-executor": {execGitCommand: gitExec}
 }
 
 should = require "should"
 
 describe "file manipulator", ->
+  press = (key) ->
+    f = if ["\t"].indexOf(key) >= 0 then onKeyup else onKeypress
+    f {which: key.charCodeAt()}
+
   describe "#getSelected()", ->
     # This is to clear any previously selected file
     beforeEach ->
@@ -33,10 +51,6 @@ describe "file manipulator", ->
 
     assertSelected = (expected) ->
       _.values(getSelected()).should.eql expected
-
-    press = (key) ->
-      f = if ["\t"].indexOf(key) >= 0 then onKeyup else onKeypress
-      f {which: key.charCodeAt()}
 
     it "selects nothing by default", ->
       onUpdate [
@@ -203,3 +217,32 @@ describe "file manipulator", ->
       press "\t"
       assertSelected ["staged", 0]
 
+  describe "executing commands on files", ->
+    dir = sinon.spy()
+    gitExecSpy = null
+
+    selectFile = (status) ->
+      onUpdate [new FileStatus status...], dir
+      press "j"
+
+    beforeEach ->
+      gitExecSucceeds = true
+      gitExecSpy = sinon.spy spiable, "gitExecImpl"
+
+    afterEach ->
+      spiable.gitExecImpl.restore()
+
+    it "executes git checkout when c is pressed", ->
+      selectFile ["M", " ", "file"]
+      press "c"
+      gitExecSpy.calledWith(dir, ["checkout", "file"]).should.be.ok
+
+    it "calls git checkout with the proper file name when a file was moved", ->
+      selectFile [" ", "M", "file", "oldFile"]
+      press "c"
+      gitExecSpy.calledWith(dir, ["checkout", "file"]).should.be.ok
+
+    it "doesn't execute git checkout on untracked files", ->
+      selectFile ["?", "?", "file"]
+      press "c"
+      gitExecSpy.callCount.should.equal 0

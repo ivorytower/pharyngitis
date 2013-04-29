@@ -1,12 +1,14 @@
-{FileStatus} = require "../../file-status"
-
 $ = require "jquery"
 _ = require "underscore"
+
+{FileStatus} = require "../../file-status"
+{execGitCommand} = require "../../git-command-executor"
 
 selected = null
 currentFileStatuses = null
 cyclingGroups = false
 selectionsForEachGroup = null
+currentDir = null
 
 class Selection
   constructor: (@group, @index) ->
@@ -59,6 +61,13 @@ keyMap = {
   k: ->
     switchSelection selectionByIndex (index) ->
       index - 1
+
+  c: ->
+    status = selected.fileStatus()
+    unless status.untracked()
+      execGitCommand currentDir, ["checkout", status.filename],
+        ->
+        ->
 }
 
 specialKeyMap = {
@@ -84,11 +93,12 @@ handleKeyEvent = (event, keyMap) ->
   cyclingGroups = false unless key == "\t"
   keyMap[key]?()
 
-@onUpdate = (fileStatuses) ->
+@onUpdate = (fileStatuses, dir) ->
   fileStatuses = FileStatus.group fileStatuses
   previouslySelected = selected
   selected = null
   cyclingGroups = false
+  currentDir = dir
 
   if previouslySelected?
     # If the same file status is present, select it

@@ -1,28 +1,14 @@
-childProcess = require "child_process"
-
 $ = require "jquery"
 fsmonitor = require "fsmonitor"
 gui = require "nw.gui"
 
 parser = require "./parser"
+{execGitCommand} = require "./git-command-executor"
 ui = require "./ui"
 pluginLoader = require "./plugin-loader"
 
 redisplay = (fileStatuses, branch) ->
   ui.refresh fileStatuses, branch
-
-execGitCommand = (dir, args, callback, errorCallback) ->
-  childProcess.execFile(
-    "/usr/bin/git"
-    args
-    cwd: dir
-    (error, stdout, stderr) ->
-      unless error?
-        callback stdout.toString()
-      else
-        ui.displayError("Error executing git #{args[0]}: #{stderr.toString()}")
-        errorCallback()
-  )
 
 refreshStatus = (dir, callback, errorCallback) ->
   await
@@ -69,7 +55,7 @@ $ ->
       dir
       (fileStatuses) ->
         for plugin in plugins
-          plugin.onUpdate? fileStatuses
+          plugin.onUpdate? fileStatuses, dir
         callback()
       errorCallback
     )
