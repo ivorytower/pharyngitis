@@ -264,3 +264,13 @@ describe "file manipulator", ->
       selectFile ["M", " ", "file"]
       press "s"
       gitExecSpy.calledWith(dir, ["reset", "--", "file"]).should.be.ok
+
+    it "executes git difftool -y when d is pressed on an unstaged file", ->
+      selectFile [" ", "M", "file"]
+      press "d"
+      gitExecSpy.calledWith(dir, ["difftool", "-y", "file"]).should.be.ok
+
+    it "executes git difftool -y --cached when d is pressed on a staged file", ->
+      selectFile ["M", " ", "file"]
+      press "d"
+      gitExecSpy.calledWith(dir, ["difftool", "-y", "--cached", "file"]).should.be.ok

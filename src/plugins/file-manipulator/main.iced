@@ -75,6 +75,14 @@ keyMap = {
     execGitCommand currentDir, command.concat([status.filename]),
       ->
       ->
+
+  d: ->
+    status = selected.fileStatus()
+    command = ["difftool", "-y", status.filename]
+    command.splice 2, 0, "--cached" if status.staged()
+    execGitCommand currentDir, command,
+      ->
+      ->
 }
 
 specialKeyMap = {
