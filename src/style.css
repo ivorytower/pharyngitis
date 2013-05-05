@@ -5,6 +5,18 @@ body {
 #page {
     font-family: "DejaVu Sans Mono", monospace;
     font-size: 14px;
+    outline: none;
+}
+
+#footer-container {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+}
+
+#footer {
+    padding: 5px 10px;
 }
 
 .file-group {

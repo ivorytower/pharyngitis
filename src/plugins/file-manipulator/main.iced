@@ -96,11 +96,11 @@ specialKeyMap = {
     cyclingGroups = true
 }
 
-$("body").keypress (event) ->
+$("#page").keypress (event) ->
   handleKeyEvent(event, keyMap)
   handleKeyEvent(event, selectedKeyMap) if selected?
 
-$("body").keyup (event) ->
+$("#page").keyup (event) ->
   handleKeyEvent(event, specialKeyMap)
 
 handleKeyEvent = (event, keyMap) ->
@@ -114,6 +114,7 @@ handleKeyEvent = (event, keyMap) ->
   selected = null
   cyclingGroups = false
   currentDir = dir
+  $("#page").focus()
 
   if previouslySelected?
     # If the same file status is present, select it

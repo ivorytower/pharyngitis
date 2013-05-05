@@ -1,4 +1,6 @@
 $ = require "jquery"
 
+$("#footer").append $("<div id=\"last-updated-at\"></div>")
+
 @onUpdate = (fileStatuses, dir) ->
-  $("#page").append $("<div id=\"last-updated-at\"></div>").text "Last updated at #{(new Date).toLocaleTimeString()}"
+  $("#last-updated-at").text "Last updated at #{(new Date).toLocaleTimeString()}"

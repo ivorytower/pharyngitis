@@ -10,11 +10,12 @@ jqueryStub = sinon.stub()
 jqueryStub.returns _.object(["find", "addClass", "removeClass"].map (method) ->
   [method, jqueryStub])
 
-jqueryStub.withArgs("body").returns {
+jqueryStub.withArgs("#page").returns {
   keypress: (callback) ->
     onKeypress = callback
   keyup: (callback) ->
     onKeyup = callback
+  focus: ->
 }
 
 gitExecSucceeds = true
