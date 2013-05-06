@@ -5,7 +5,10 @@ ui = require "./ui"
 @execGitCommand = (dir, command, callback, errorCallback) ->
   childProcess.exec(
     "/usr/bin/git " + command
-    cwd: dir
+    {
+      cwd: dir
+      stdio: ["ignore"]
+    }
     (error, stdout, stderr) ->
       unless error?
         callback stdout.toString()
