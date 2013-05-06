@@ -21,7 +21,7 @@ jqueryStub.withArgs("#page").returns {
 gitExecSucceeds = true
 # This absolute nonsense is necessitated by the way Sinon works
 spiable = {
-  gitExecImpl: (dir, args, callback, errorCallback) ->
+  gitExecImpl: (dir, command, callback, errorCallback) ->
     if gitExecSucceeds
       callback()
     else
@@ -236,12 +236,12 @@ describe "file manipulator", ->
     it "executes git checkout when c is pressed", ->
       selectFile [" ", "M", "file"]
       press "c"
-      gitExecSpy.calledWith(dir, ["checkout", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "checkout file").should.be.ok
 
     it "calls git checkout with the proper file name when a file was moved", ->
       selectFile [" ", "M", "file", "oldFile"]
       press "c"
-      gitExecSpy.calledWith(dir, ["checkout", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "checkout file").should.be.ok
 
     it "doesn't execute git checkout on staged or untracked files", ->
       selectFile ["?", "?", "file"]
@@ -254,36 +254,36 @@ describe "file manipulator", ->
     it "executes git add when s is pressed on an untracked file", ->
       selectFile ["?", "?", "file"]
       press "s"
-      gitExecSpy.calledWith(dir, ["add", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "add file").should.be.ok
 
     it "executes git add when s is pressed on an unstaged file", ->
       selectFile [" ", "M", "file"]
       press "s"
-      gitExecSpy.calledWith(dir, ["add", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "add file").should.be.ok
 
     it "executes git reset when s is pressed on a staged file", ->
       selectFile ["M", " ", "file"]
       press "s"
-      gitExecSpy.calledWith(dir, ["reset", "--", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "reset -- file").should.be.ok
 
     it "executes git add or reset based on where the file was selected for files that are both staged and unstaged", ->
       onUpdate [new FileStatus("M", "M", "file")], dir
       press "j"
       press "s"
-      gitExecSpy.calledWith(dir, ["reset", "--", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "reset -- file").should.be.ok
       press "j"
       press "s"
-      gitExecSpy.secondCall.calledWith(dir, ["add", "file"]).should.be.ok
+      gitExecSpy.secondCall.calledWith(dir, "add file").should.be.ok
 
     it "executes git difftool -y when d is pressed on an unstaged file", ->
       selectFile [" ", "M", "file"]
       press "d"
-      gitExecSpy.calledWith(dir, ["difftool", "-y", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "difftool -y file").should.be.ok
 
     it "executes git difftool -y --cached when d is pressed on a staged file", ->
       selectFile ["M", " ", "file"]
       press "d"
-      gitExecSpy.calledWith(dir, ["difftool", "-y", "--cached", "file"]).should.be.ok
+      gitExecSpy.calledWith(dir, "difftool -y --cached file").should.be.ok
 
     it "doesn't execute anything if no file is selected", ->
       onUpdate [new FileStatus("M", " ", "file")], dir

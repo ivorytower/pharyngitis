@@ -3,6 +3,7 @@ _ = require "underscore"
 
 {FileStatus} = require "../../file-status"
 {execGitCommand} = require "../../git-command-executor"
+{displayError} = require "../../ui"
 
 selected = null
 currentFileStatuses = null
@@ -66,22 +67,22 @@ keyMap = {
 selectedKeyMap = {
   c: ->
     if selected.group == "unstaged"
-      execGitCommand currentDir, ["checkout", selected.fileStatus().filename],
+      execGitCommand currentDir, "checkout " + selected.fileStatus().filename,
         ->
-        ->
+        displayError
 
   s: ->
-    command = if selected.group == "staged" then ["reset", "--"] else ["add"]
-    execGitCommand currentDir, command.concat([selected.fileStatus().filename]),
+    command = if selected.group == "staged" then "reset -- " else "add "
+    execGitCommand currentDir, command + selected.fileStatus().filename,
       ->
-      ->
+      displayError
 
   d: ->
-    command = ["difftool", "-y", selected.fileStatus().filename]
-    command.splice 2, 0, "--cached" if selected.group == "staged"
+    cachedOption = if selected.group == "staged" then " --cached" else ""
+    command = "difftool -y#{cachedOption} " + selected.fileStatus().filename
     execGitCommand currentDir, command,
       ->
-      ->
+      displayError
 }
 
 specialKeyMap = {

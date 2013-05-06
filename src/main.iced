@@ -11,18 +11,22 @@ redisplay = (fileStatuses, branch) ->
   ui.refresh fileStatuses, branch
 
 refreshStatus = (dir, callback, errorCallback) ->
+  errorCb = (errorMessage, command) ->
+    ui.displayError("Error executing git #{command}: #{errorMessage}")
+    errorCallback()
+
   await
     execGitCommand(
       dir
-      ["status", "--porcelain", "-z"]
+      "status --porcelain -z"
       defer output
-      errorCallback
+      errorCb
     )
     execGitCommand(
       dir
-      ["rev-parse", "--abbrev-ref", "HEAD"]
+      "rev-parse --abbrev-ref HEAD"
       defer branch
-      errorCallback
+      errorCb
     )
 
   fileStatuses = parser.parse(output)
