@@ -120,7 +120,8 @@ handleKeyEvent = (event, keyMap) ->
   if previouslySelected?
     # If the same file status is present, select it
     previouslySelectedStatus = previouslySelected.fileStatus()
-    selections = buildSelections(fileStatuses)
+    selections = buildSelections(fileStatuses).filter (selection) ->
+      selection.group == previouslySelected.group
     orderedStatuses = selections.map (selection) ->
       selection.fileStatus fileStatuses
     indexInSelections = indexOf orderedStatuses, previouslySelectedStatus

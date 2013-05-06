@@ -153,6 +153,18 @@ describe "file manipulator", ->
       ]
       assertSelected ["unstaged", 0]
 
+    it "remembers the selected file when it is present in both staged and unstaged groups", ->
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", "M", "file2"
+      ]
+      press "k"
+      onUpdate [
+        new FileStatus "M", " ", "file1"
+        new FileStatus "M", "M", "file2"
+      ]
+      assertSelected ["unstaged", 0]
+
     it "selects the next file in the group when the file has disappeared", ->
       onUpdate [
         new FileStatus "M", " ", "file1"
