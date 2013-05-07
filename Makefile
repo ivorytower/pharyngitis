@@ -35,7 +35,7 @@ endif
 
 all: dist
 
-test: $(test_compiled)
+test: $(compiled) $(test_compiled)
 	@echo "(target) running tests..."
 	@$(mocha)
 
