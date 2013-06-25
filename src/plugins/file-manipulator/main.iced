@@ -79,7 +79,7 @@ selectedKeyMap = {
 
   d: ->
     cachedOption = if selected.group == "staged" then " --cached" else ""
-    command = "difftool -y#{cachedOption} " + selected.fileStatus().filename
+    command = "difftool -y#{cachedOption} -- " + selected.fileStatus().filename
     execGitCommand currentDir, command,
       ->
       displayError
