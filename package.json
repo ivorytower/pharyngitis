@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "jquery": "",
-        "fsmonitor": "",
+        "fsmonitor": "git+https://github.com/ivorytower/fsmonitor.js",
         "jade": "",
         "underscore": ""
     },
