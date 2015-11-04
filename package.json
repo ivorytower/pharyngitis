@@ -7,12 +7,13 @@
     },
     "dependencies": {
         "jquery": "",
-        "fsmonitor": "git+https://github.com/ivorytower/fsmonitor.js",
+        "fsmonitor": "",
         "jade": "",
         "underscore": ""
     },
     "devDependencies": {
         "iced-coffee-script": "",
+        "iced-runtime": "",
         "mocha": "",
         "should": "",
         "sinon": "",
