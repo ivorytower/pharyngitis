@@ -38,7 +38,7 @@ fsWatchLoop = (dir, callback) ->
   fileFilter =
     matches: (_) -> true
     excludes: (path) ->
-      path.match /^.git\//
+      path.match(/^\.git\/objects$/)?
 
   monitor = fsmonitor.watch dir, fileFilter, (_) ->
     callback(
