@@ -6,6 +6,7 @@
         "test": "make test"
     },
     "dependencies": {
+        "nw": "",
         "jquery": "",
         "fsmonitor": "",
         "jade": "",
